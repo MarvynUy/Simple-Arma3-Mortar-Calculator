@@ -116,7 +116,7 @@ btn_calculate.grid(row=4, column=0, columnspan=2, pady=10)
 # Result Display
 result_text = tk.StringVar()
 label_result = tk.Label(root, textvariable=result_text, justify="left", font=("Arial", 12), fg="blue")
-label_result.grid(row=4, column=0, columnspan=2, pady=10)
+label_result.grid(row=5, column=0, columnspan=2, pady=10)
 
 # Run the GUI
 root.mainloop()
