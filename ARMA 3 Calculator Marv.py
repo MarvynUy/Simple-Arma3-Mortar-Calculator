@@ -103,21 +103,16 @@ def calculate_coords():
     bearings = calcBearing(bearingsQ, Alpha, Bravo)
     distance = calcRange(Alpha, Bravo)
     
-    result_text.set(f"Bearings : {bearings:.2f} degrees\n"
-                    f"Range : {distance:.2f} m\n")
+    calculate_angles(bearings,distance)
     return
 
-
-def calculate_angles():
+def calculate_angles(bearings,x):
     """Handles user input and computes elevation & azimuth angles."""
     try:
         v = float(combo_velocity.get())
-        x = float(entry_x.get())
         y = float(entry_y.get())
         g = 9.81  # Gravity (m/s²)
         
-
-
         elevation_plus = compute_elevation(v, g, x, y, '+')
         elevation_minus = compute_elevation(v, g, x, y, '-')
         azimuth = compute_azimuth(x, y)
@@ -126,9 +121,11 @@ def calculate_angles():
             messagebox.showerror("Error", "Target is unreachable (No real solution).")
             return
 
-        result_text1.set(f"Elevation Angle (+) : {elevation_plus:.2f}°\n"
-                        f"Elevation Angle (-) : {elevation_minus:.2f}°\n"
-                        f"Azimuth Angle       : {azimuth:.2f}°")
+        result_text1.set(f"Distance to Target : {x:.2f}m\n"
+                        f"Elevation Angle (+) : {elevation_plus:.2f}°\n"
+                        #f"Elevation Angle (-) : {elevation_minus:.2f}°\n"
+                        #f"Azimuth Angle       : {azimuth:.2f}°\n"
+                        f"Bearings : {bearings:.2f} degrees")
 
     except ValueError:
         messagebox.showerror("Input Error", "Please enter valid numbers.")
@@ -138,50 +135,42 @@ root = tk.Tk()
 root.title("Glitch Marvelous MK6 mortar ARMA3 Calculator")
 
 # Labels and Entry Fields
+tk.Label(root, text="|Murv's Mortar Calculator|").grid(row=0, column=0, columnspan=2, padx=10, pady=5)
 
+# Explanation Velocity
+tk.Label(root, text="Close range: 34 to 499 metres \t= \t70m/m² \nMedium range: 139 to 1,998 metres \t= \t140m/m² \nLong range: 284 to 4,078 metres \t= \t200m/m²", justify="left",anchor="w").grid(row=1, column=0, columnspan=2, padx=10, pady=5)
 
-tk.Label(root, text="|Murv's Mortar Calculator|").grid(row=0, column=0, padx=10, pady=5)
-
-#Calculating distance and bearings
-tk.Label(root, text="Firing position:").grid(row=1, column=0, padx=10, pady=5)
-entry_battery = tk.Entry(root)
-entry_battery.grid(row=1, column=1, padx=10, pady=5)
-
-tk.Label(root, text="Target position:").grid(row=2, column=0, padx=10, pady=5)
-entry_target = tk.Entry(root)
-entry_target.grid(row=2, column=1, padx=10, pady=5)
-
-# Calculate Button 1
-btn_calculate = tk.Button(root, text="Calculate Range Bearing", command=calculate_coords)
-btn_calculate.grid(row=3, column=0, columnspan=2, pady=10)
-
-result_text = tk.StringVar()
-label_result = tk.Label(root, textvariable=result_text, justify="left", font=("Arial", 12), fg="blue")
-label_result.grid(row=4, column=0, columnspan=2, pady=10)
-
-tk.Label(root, text="|Close range: 34 to 499 metres |Medium range: 139 to 1,998 metres |Long range: 284 to 4,078 metres|").grid(row=5, column=0, padx=10, pady=5)
-
-tk.Label(root, text="Select Initial Velocity (m/s):").grid(row=6, column=0, padx=10, pady=5)
+# Choosing Velocity
+tk.Label(root, text="Select Initial Velocity (m/s):").grid(row=2, column=0, padx=10, pady=5)
 combo_velocity = ttk.Combobox(root, values=["70", "140", "200"], state="readonly")
 combo_velocity.current(0)  # Default to 70
-combo_velocity.grid(row=6, column=1, padx=10, pady=5)
+combo_velocity.grid(row=2, column=1, padx=10, pady=5)
 
-tk.Label(root, text="Target Horizontal Range (m):").grid(row=7, column=0, padx=10, pady=5)
-entry_x = tk.Entry(root)
-entry_x.grid(row=7, column=1, padx=10, pady=5)
+# Short Explanation
+tk.Label(root, text="Position: 4 for X, 4 for Y, 8 Total").grid(row=3, column=0, columnspan=2, padx=10, pady=5)
 
-tk.Label(root, text="Target Vertical Height (m):").grid(row=8, column=0, padx=10, pady=5)
+# Calculating distance and bearings
+tk.Label(root, text="Firing position:").grid(row=4, column=0, padx=10, pady=5)
+entry_battery = tk.Entry(root)
+entry_battery.grid(row=4, column=1, padx=10, pady=5)
+
+tk.Label(root, text="Target position:").grid(row=5, column=0, padx=10, pady=5)
+entry_target = tk.Entry(root)
+entry_target.grid(row=5, column=1, padx=10, pady=5)
+
+tk.Label(root, text="Target Height Difference (m):").grid(row=6, column=0, padx=10, pady=5)
 entry_y = tk.Entry(root)
-entry_y.grid(row=8, column=1, padx=10, pady=5)
+entry_y.grid(row=6, column=1, padx=10, pady=5)
+entry_y.insert(0, '0')
 
 # Calculate Button
-btn_calculate = tk.Button(root, text="Calculate", command=calculate_angles)
-btn_calculate.grid(row=9, column=0, columnspan=2, pady=10)
+btn_calculate = tk.Button(root, text="Calculate", command=calculate_coords)
+btn_calculate.grid(row=7, column=0, columnspan=2, pady=10)
 
 # Result Display
 result_text1 = tk.StringVar()
 label_result1 = tk.Label(root, textvariable=result_text1, justify="left", font=("Arial", 12), fg="blue")
-label_result1.grid(row=10, column=0, columnspan=2, pady=10)
+label_result1.grid(row=8, column=0, columnspan=2, pady=10)
 
 # Run the GUI
 root.mainloop()
